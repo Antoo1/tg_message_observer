@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+aiogram = "*"
+pydantic = "*"
+"ruamel.yaml" = "*"
+pydantic-settings = {extras = ["yaml"], version = "*"}
+async-lru = "*"
+asyncpg = "*"
+sqlalchemy = "*"
+asgi-lifespan = "*"
+fastapi = "==0.110"
+alembic = "*"
+fastapi-utils = "*"
+uvicorn = "*"
+typing-inspect = "*"
+greenlet = "*"
+
+[dev-packages]
+pytest = "*"
+
+[requires]
+python_version = "3.12"
