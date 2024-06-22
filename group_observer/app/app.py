@@ -1,11 +1,10 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from sqlalchemy.orm import configure_mappers
 
 from group_observer.app.bot import bot, dp
 from group_observer.app.config import config
-from group_observer.app.db import db_engine
+from group_observer.app.db import db_client
 from group_observer.app.logger import logger
 from group_observer.views.health_check import healthcheck_route
 from group_observer.app.logging_configuration import init_logging
@@ -16,8 +15,8 @@ def create_app() -> FastAPI:
     @asynccontextmanager
     async def lifespan(app):
         logger.info('Starting up!')
-        db_engine()
-        configure_mappers()
+        db_client()
+        logger.debug(await db_client.admin.command('ping'))
         await bot.set_webhook(
             url=config.WEBHOOK_URL,
             allowed_updates=dp.resolve_used_update_types(),
@@ -26,7 +25,7 @@ def create_app() -> FastAPI:
         logger.info('webhoooks set')
         yield
         await bot.delete_webhook()
-        await db_engine.dispose()
+        db_client.close()
         logger.info("Shutting down!")
 
     if config.INIT_LOGGING:

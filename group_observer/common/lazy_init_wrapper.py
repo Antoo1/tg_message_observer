@@ -1,11 +1,8 @@
 from functools import cached_property
-from typing import TypeVar, Callable, Any
+from typing import Callable, Any
 
 
-T = TypeVar('T')
-
-
-class LazyInitWrapper:
+class LazyInitWrapper[T]:
 
     def __init__(self, creator: Callable[[], T]):
         self._creator = creator
@@ -17,7 +14,7 @@ class LazyInitWrapper:
     def __getattr__(self, item: str) -> Any:
         return getattr(self.__instance__, item)
 
-    def __call__(self):
+    def __call__(self) -> T:
         return self.__instance__
 
     async def __aenter__(self, *args, **kwargs):

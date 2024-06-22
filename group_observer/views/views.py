@@ -3,12 +3,12 @@ from enum import Enum
 from aiogram.filters import Command
 from aiogram.types import Update, Message
 from fastapi_utils.cbv import cbv
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends, Query, APIRouter, Request
 
 from group_observer.app.bot import dp, bot
 from group_observer.app.dependencies import get_db_session
 from group_observer.services import MessageHandlerService
+from group_observer.common.db import MongoSession
 
 router = APIRouter()
 
@@ -20,7 +20,7 @@ class CommandsEnum(str, Enum):
 
 @cbv(router)
 class OrderCBV:
-    db_session: AsyncSession = Depends(get_db_session)
+    db_session: MongoSession = Depends(get_db_session)
 
     @router.post("/webhook")
     async def webhook(self, update: Update) -> None:
