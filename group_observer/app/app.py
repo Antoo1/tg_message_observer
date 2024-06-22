@@ -39,7 +39,7 @@ def create_app() -> FastAPI:
 
     app = FastAPI(**fastapi_params)
 
-    app.include_router(healthcheck_route, prefix='/api/v1', tags=['v0'])
+    app.include_router(healthcheck_route, prefix='/api/v1', tags=['v1'])
     app.include_router(router, prefix='/api/v1', tags=['v1'],)
 
     return app
