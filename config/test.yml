@@ -9,8 +9,6 @@ TG_API_TOKEN: ''
 DB_NAME: db_group_observer
 DB_LOGIN:
 DB_PASSWORD:
-DB_HOST: localhost
-DB_PORT: 54321
-DB_SCHEMA: public
-DB_POOL_SIZE: 5
+DB_SEED_LIST:
+
 WEBHOOK_URL: https://xxx/

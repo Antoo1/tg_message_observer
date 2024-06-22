@@ -1,5 +1,6 @@
 import os
 from typing import Type
+from urllib.parse import quote_plus
 
 from pydantic_settings import (
     BaseSettings,
@@ -45,21 +46,17 @@ class BaseConfig(ABSBaseConfig):
     DB_NAME: str
     DB_LOGIN: str
     DB_PASSWORD: str
-    DB_HOST: str
-    DB_PORT: int = 5432
-    DB_SCHEMA: str
-    DB_POOL_SIZE: int = 5
+    DB_SEED_LIST: str
 
     @property
     def ASYNC_DB_URL(self) -> str:
-        return f'postgresql+asyncpg://{self._get_db_url_wo_driver()}'
+        return f'mongodb://{self._get_db_url_wo_driver()}'
 
-    def _get_db_url_wo_driver(self):
-        return '{user}:{password}@{host}:{port}/{database}'.format(
-            user=self.DB_LOGIN,
-            password=self.DB_PASSWORD,
-            host=self.DB_HOST,
-            port=self.DB_PORT,
+    def _get_db_url_wo_driver(self) -> str:
+        return '{user}:{password}@{seed_list}/{database}'.format(
+            user=quote_plus(self.DB_LOGIN),
+            password=quote_plus(self.DB_PASSWORD),
+            seed_list=self.DB_SEED_LIST,
             database=self.DB_NAME,
         )
 
