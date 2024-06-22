@@ -3,7 +3,7 @@ from enum import Enum
 from aiogram.filters import Command
 from aiogram.types import Update, Message
 from fastapi_utils.cbv import cbv
-from fastapi import Depends, Query, APIRouter, Request
+from fastapi import Depends, APIRouter
 
 from group_observer.app.bot import dp, bot
 from group_observer.app.dependencies import get_db_session
