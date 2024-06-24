@@ -47,6 +47,7 @@ class BaseConfig(ABSBaseConfig):
     DB_LOGIN: str
     DB_PASSWORD: str
     DB_SEED_LIST: str
+    BOT_NAME: str
 
     @property
     def ASYNC_DB_URL(self) -> str:

@@ -26,7 +26,7 @@ def create_app() -> FastAPI:
         yield
         await bot.delete_webhook()
         db_client.close()
-        logger.info("Shutting down!")
+        logger.info('Shutting down!')
 
     if config.INIT_LOGGING:
         init_logging()
@@ -39,6 +39,6 @@ def create_app() -> FastAPI:
     app = FastAPI(**fastapi_params)
 
     app.include_router(healthcheck_route, prefix='/api/v1', tags=['v1'])
-    app.include_router(router, prefix='/api/v1', tags=['v1'],)
+    app.include_router(router, prefix='/api/v1', tags=['v1'])
 
     return app
