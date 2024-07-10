@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from async_lru import alru_cache
 
 from group_observer.common.services import CRUDBase
 from group_observer.views.dto import ChatRulesDTO
@@ -23,7 +24,11 @@ class RuleCreator(CRUDBase):
 @dataclass
 class RuleUpdater(CRUDBase):
     async def update_business_id(self, user_id: int, business_id: str):
-        await self.db.rules.update(rules_dto.dict())
+        RuleProvider.get_active_rules.cache_clear()
+        await self.db.rules.update_many(
+            {'owner_chat_id': user_id},
+            {'$set': {'business_id': business_id}}
+        )
 
 
 @dataclass
@@ -37,6 +42,13 @@ class RuleProvider(CRUDBase):
     async def get_rules(self, search_kwargs: dict) -> list[ChatRulesDTO]:
         return [ChatRulesDTO.model_validate(r)
                 async for r in self.db.rules.find(search_kwargs)]
+
+    @alru_cache(maxsize=200)
+    async def get_active_rules(self, business_id: str) -> list[ChatRulesDTO]:
+        business_id_name = 'business_id'
+        assert business_id_name in ChatRulesDTO.model_fields
+        return [ChatRulesDTO.model_validate(r)
+                async for r in self.db.rules.find({business_id_name: business_id})]
 
 
 @dataclass

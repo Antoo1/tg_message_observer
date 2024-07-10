@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 
 from aiogram.filters import Command
@@ -7,6 +8,8 @@ from fastapi import Depends, APIRouter
 
 from group_observer.app.bot import dp, bot
 from group_observer.app.dependencies import get_db_session
+from group_observer.app.logger import logger
+from group_observer.message_handler import CheckRuleService
 from group_observer.services import MessageCRUDService
 from group_observer.common.db import MongoSession
 from group_observer.views.dto import ChatRulesDTO
@@ -14,16 +17,34 @@ from group_observer.views.dto import ChatRulesDTO
 router = APIRouter()
 
 
-@dp.business_message.outer_middleware()
-async def get_user_session(
-    handler,
-    event,
-    data,
-):
-    db_session: MongoSession = data['db_session']
-    data = await db_session.db.rules.find_one({})
-    # data = [r async for r in data]
-    return handler(event, data)
+# @dp.business_message.outer_middleware()
+# async def error_handler(
+#     handler,
+#     event,
+#     data,
+# ):
+#     # db_session: MongoSession = data['db_session']
+#
+#     # data = [r async for r in data]
+#     # return
+#     data1 = data.copy()
+#     for i in ('event_context', 'event_from_user', 'event_chat', 'event_update'):
+#         logger.debug(f'{i}:\n{data1.pop(i)}')
+#     logger.debug(data1)
+#     return await handler(event, data)
+#
+#
+# @dp.message.outer_middleware()
+# async def error_handler(
+#     handler,
+#     event,
+#     data,
+# ):
+#     data1 = data.copy()
+#     for i in ('event_context', 'event_from_user', 'event_chat', 'event_update'):
+#         logger.debug(f'{i}:\n{data1.pop(i)}')
+#     logger.debug(data1)
+#     return await handler(event, data)
 
 
 class CommandsEnum(str, Enum):
@@ -109,10 +130,14 @@ async def delete_rules(message: Message, db_session: MongoSession) -> None:
     )
 
 
-@dp.business_message()
-@dp.edited_business_message()
-async def send_welcome3(message: Message, db_session: MongoSession) -> None:
-    await message.reply(f'hey businesman')
+# @dp.business_message()
+# @dp.edited_business_message()
+# async def send_welcome3(message: Message, db_session: MongoSession) -> None:
+#     fitted_rule = await CheckRuleService(db_session).get_suitable_rule(message)
+#     try:
+#         await message.forward(chat_id=369008786)
+#     except Exception as e:
+#         logger.error(e)
 
 
 def make_chat_rule_description(rule: ChatRulesDTO) -> str:

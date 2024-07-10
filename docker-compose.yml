@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  product-orders:
+    build:
+      context: .
+    environment:
+      ENVIRONMENT: testing
+      DB_NAME: testing
+      DB_LOGIN: postgres
+      DB_PASSWORD: testing
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_SCHEMA: public
+      DB_POOL_SIZE: 5
+      MONGO_DB_SEED_LIST: mongo:27017
+      MONGO_LOGIN: testing
+      MONGO_PASSWORD: testing
+      MONGO_DB_NAME: testing
+    depends_on:
+      - mongo
+
+  mongo:
+      build:
+        context: ./scripts/mongo
+      restart: always
+      environment:
+        MONGO_INITDB_USERNAME: testing
+        MONGO_INITDB_PASSWORD: testing
+        MONGO_INITDB_DATABASE: testing
+        MONGO_REPL_HOSTNAME: mongo  # should be the same as service name
+        MONGO_REPL_ID: rs0  # should be the same as '--replSet' command arg
+      expose:
+        - "27017"
+      ports:
+        - "27017:27017"
+      command: ["--replSet", "rs0"]
+#  mongo:
+#      image: mongo:latest
+#      container_name: order_capture_mongo
+#      restart: always
+#      environment:
+#          MONGO_INITDB_USERNAME: testing
+#          MONGO_INITDB_PASSWORD: testing
+#          MONGO_INITDB_DATABASE: testing
+#      ports:
+#        - "27017:27017"
+#

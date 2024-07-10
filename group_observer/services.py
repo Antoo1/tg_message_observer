@@ -38,6 +38,8 @@ class MessageCRUDService(BaseServiceWithDB):
 
 def make_rules_from_message(message: Message) -> ChatRulesDTO:
     _, target_id, regexp, *forward_to = message.text.split('\n')
+    if forward_to:
+        forward_to = forward_to[0]
     regexp = regexp.split(' ')
     return ChatRulesDTO(
         target_chat_id=target_id,
