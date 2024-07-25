@@ -2,7 +2,7 @@ from importlib import reload
 
 import pytest
 
-import group_observer.app.config as config_module
+import crud_bot.app.config as config_module
 
 
 # Without this fixture configuration for the wrong environment could be left

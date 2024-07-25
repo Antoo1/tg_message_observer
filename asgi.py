@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from group_observer.app.app import create_app
+from crud_bot.app.app import create_app
 
 app: FastAPI = create_app()
 

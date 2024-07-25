@@ -1,0 +1,10 @@
+
+
+API_ID: '123'
+API_HASH: 'fds1'
+APP_TITLE: 'fds'
+SHORT_NAME: 'fds'
+TEST_CONFIGURATION: '124f'
+PROD_CONFIGURATION: 'fdsf1'
+
+DB_STRING: 'mongodb://localhost:27017'

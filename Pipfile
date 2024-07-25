@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 aiogram = "*"
 pydantic = "*"
-"ruamel.yaml" = "*"
 pydantic-settings = {extras = ["yaml"] }
 async-lru = "*"
 asgi-lifespan = "*"
@@ -17,6 +16,7 @@ typing-inspect = "*"
 greenlet = "*"
 motor = "*"
 google-re2 = "*"
+telethon = "*"
 
 [dev-packages]
 pytest = "*"
