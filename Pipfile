@@ -15,8 +15,9 @@ uvicorn = "*"
 typing-inspect = "*"
 greenlet = "*"
 motor = "*"
-google-re2 = "*"
 telethon = "*"
+gunicorn = "*"
+python-json-logger = "*"
 
 [dev-packages]
 pytest = "*"

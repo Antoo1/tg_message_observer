@@ -1,5 +1,7 @@
 import logging.config
 
+from pythonjsonlogger.jsonlogger import JsonFormatter
+
 from .config import config, Environment
 
 
@@ -15,7 +17,7 @@ filebeat_handler = {
         'filename': '/var/log/filebeat.log',
         'backupCount': 1,
         'maxBytes': 3 * MEGABYTE,
-        'filters': ['headers'],
+        'filters': [],
     },
 }
 
@@ -23,8 +25,6 @@ filebeat_handler = {
 LOGGING_CONFIG = {
     'version': 1,
     'filters': {
-        # 'request_id': {'()': RequestIdFilter},
-        # 'headers': {'()': HeadersFilter},
     },
     'formatters': {
         'default': {
@@ -33,19 +33,14 @@ LOGGING_CONFIG = {
             ),
             'datefmt': '%Y-%m-%d %H:%M:%S',
         },
-        # 'filebeat': {
-        #     'format': (
-        #         '%(levelname)s::%(asctime)s:%(name)s.%(funcName)s:%(request_id)s:'
-        #         '%(headers)s:%(message)s'
-        #     ),
-        #     '()': CustomJsonLogFormatter,
-        #     'json_ensure_ascii': False,
-        #     'rename_fields': {
-        #         'exc_info': 'stacktrace',
-        #         'levelname': 'level',
-        #         'request_id': 'requestId',
-        #     },
-        # },
+        'filebeat': {
+            'format': (
+                '%(levelname)s::%(asctime)s:%(name)s.%(funcName)s:'
+                '%(message)s'
+            ),
+            '()': JsonFormatter,
+            'json_ensure_ascii': False,
+        },
     },
     'handlers': {
         'console': {
@@ -54,7 +49,7 @@ LOGGING_CONFIG = {
             'stream': 'ext://sys.stdout',
             'filters': [],
         },
-        # **({} if is_local else filebeat_handler)
+        **({} if is_local else filebeat_handler)
     },
     'loggers': {
         '': {

@@ -7,6 +7,8 @@ WORKDIR /usr/src/app
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 
+RUN apk add build-base gcc python3-dev musl-dev linux-headers
+
 # Create directories for logs
 RUN touch /var/log/filebeat.log /var/log/filebeat.log.1 && \
     chmod 664 /var/log/filebeat.log /var/log/filebeat.log.1
@@ -15,7 +17,7 @@ RUN touch /var/log/filebeat.log /var/log/filebeat.log.1 && \
 # Install dependencies
 COPY Pipfile.lock Pipfile ./
 
-RUN pip install --no-cache-dir -U setuptools pip pipenv \
+RUN pip install --no-cache-dir -U setuptools pip pipenv wheel \
     && CI=1 pipenv install --dev --deploy --system \
     && pipenv --clear
 
