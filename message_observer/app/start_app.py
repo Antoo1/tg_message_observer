@@ -41,7 +41,7 @@ async def _looped_task(handler_registry: HandlerRegistryService):
             chats: list[ChatRulesDTO] = await facade.get_rules_by_tg_id(config.MY_ID)
             handler_registry.update_handlers_if_differ(chats)
         except Exception as e:
-            logger.error(f'error occurred:{e!r}')
+            logger.error(f'error occurred:{e!r}', exc_info=True)
         await asyncio.sleep(5)
 
 

@@ -12,11 +12,17 @@ from .dto import ExistingRuleDTO, ExistingChatRulesDTO
 class HandlerRegistryService:
     def __init__(self, tg_client: TelegramClient):
         self.client = tg_client
-        self._existing_chat_rules_map: dict[int, ChatRulesDTO] = {}
+        self._existing_chat_rules_map: dict[int, dict[int, ChatRulesDTO]] = {}
 
     def update_handlers_if_differ(self, chat_rules: list[ChatRulesDTO]):
         for chat_rule in chat_rules:
-            if existing_chat_rule := self._existing_chat_rules_map.get(chat_rule.owner_chat_id):
+            existing_chat_rules_map = self._existing_chat_rules_map
+            if (
+                chat_rule.owner_chat_id in existing_chat_rules_map
+                and (existing_chat_rule := existing_chat_rules_map[chat_rule.owner_chat_id].get(
+                    chat_rule.target_chat_id
+                ))
+            ):
                 rules_to_remove: set = existing_chat_rule.rules - set(chat_rule.rules)
                 self._unregister_rules(rules=rules_to_remove, chats=chat_rule.target_chat_id)
                 rules_to_create: set = set(chat_rule.rules) - existing_chat_rule.rules
@@ -31,10 +37,16 @@ class HandlerRegistryService:
     def register_new_handlers(self, chats: list[ChatRulesDTO]):
         for chat_rule in chats:
             rules = self._register_rules(rules=chat_rule.rules, chats=chat_rule.target_chat_id)
-            self._existing_chat_rules_map[chat_rule.owner_chat_id] = ExistingChatRulesDTO(
+            new_created_rules = ExistingChatRulesDTO(
                 **chat_rule.dict(exclude={'rules'}),
                 rules=rules,
             )
+            if owner_rules := self._existing_chat_rules_map.get(chat_rule.owner_chat_id):
+                owner_rules[chat_rule.target_chat_id] = new_created_rules
+            else:
+                self._existing_chat_rules_map[chat_rule.owner_chat_id] = {
+                    chat_rule.target_chat_id: new_created_rules
+                }
 
     def _register_rules(self, rules: Iterable[RuleDTO], chats) -> set[ExistingRuleDTO]:
         """
