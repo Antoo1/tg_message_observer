@@ -68,8 +68,6 @@ async def create_rule(message: Message, db_session: MongoSession) -> None:
     await message.answer(
         'Создал правило:\n'
         f'{make_chat_rule_description(rule)}\n\n'
-        'Если у тебя добавлен бот `Telegram Business` -> `ChatBots`, и выбраны чаты, '
-        'то я буду присылать тебе оттуда оповещения'
     )
 
 
@@ -99,7 +97,9 @@ async def delete_rules(message: Message, db_session: MongoSession) -> None:
 
 def make_chat_rule_description(rule: ChatRulesDTO) -> str:
     regexps = [r.regexp for r in rule.rules]
-    return f'чат: {rule.chat_name or rule.target_chat_id}\nправила: {regexps}'
+    forward_to = rule.chat_to_forward or rule.owner_chat_id
+    return (f'чат: {rule.chat_name or rule.target_chat_id}\nправила: {regexps}\n'
+            f'пересылаю сообщения в чат: {forward_to}')
 
 
 @dp.error(ExceptionTypeFilter(Exception), F.update.message.as_("message"))

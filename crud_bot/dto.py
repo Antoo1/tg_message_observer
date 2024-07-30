@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator
 
 
 class RuleDTO(BaseModel):
@@ -21,6 +21,16 @@ class ChatRulesDTO(BaseModel):
     rules: list[RuleDTO] = Field(default_factory=set)
     chat_name: str | None
     chat_to_forward: int | None
+
+    @property
+    def key(self) -> tuple:
+        return self.owner_chat_id, self.target_chat_id, self.chat_to_forward
+
+    @model_validator(mode='after')
+    def prevent_chat_to_forward_and_target_be_the_same(self):
+        if (self.chat_to_forward or self.owner_chat_id) == self.target_chat_id:
+            raise ValueError('target chat cannot be the same chat to forward')
+        return self
 
     def enrich_from_existing(self, existing_dto: 'ChatRulesDTO'):
         self.business_id = self.business_id or existing_dto.business_id

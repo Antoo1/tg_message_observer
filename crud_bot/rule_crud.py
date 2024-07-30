@@ -7,16 +7,21 @@ from crud_bot.dto import ChatRulesDTO
 
 class RuleCreator(CRUDBase):
     async def __call__(self, rule_dto: ChatRulesDTO) -> None:
-        search_params = rule_dto.dict(include={'owner_chat_id', 'target_chat_id'})
+        search_params = rule_dto.dict(
+            include={'owner_chat_id', 'target_chat_id', 'chat_to_forward'},
+            exclude_none=True,
+        )
         rules = await RuleProvider(self.db).get_rules(search_params)
         if len(rules) == 0:
             await self.db.rules.insert_one(rule_dto.dict())
+            self.logger.info(f'Saved new rule:\n{rule_dto!r}')
         elif len(rules) == 1:
             rule_dto.enrich_from_existing(rules[0])
             await self.db.rules.update_one(
                 filter=rule_dto.dict(include={'owner_chat_id', 'target_chat_id'}),
                 update={'$set': rule_dto.dict()},
             )
+            self.logger.info(f'Updated existing rule with:\n{rule_dto!r}')
         else:
             raise AssertionError('cannot be several records!!')
 
@@ -67,6 +72,8 @@ class RuleRemover(CRUDBase):
         assert owner_chat_name in ChatRulesDTO.model_fields
         target_name = 'target_chat_id'
         assert target_name in ChatRulesDTO.model_fields
-        return await self.db.rules.delete_one(
+        db_resp = await self.db.rules.delete_one(
             {owner_chat_name: user_id, target_name: target_id}
         )
+        self.logger.info(f'Removed rule for:\n{user_id=}, {target_id=}. \n{db_resp=}')
+        return db_resp
