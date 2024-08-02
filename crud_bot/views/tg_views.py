@@ -8,8 +8,6 @@ from aiogram.types import Message, ErrorEvent
 
 from crud_bot.app.bot import dp
 from crud_bot.app.config import config
-from crud_bot.app.exceptions import AppError
-from crud_bot.app.logger import logger
 from crud_bot.common.db import MongoSession
 from crud_bot.dto import ChatRulesDTO
 from crud_bot.services import MessageCRUDService, make_rules_from_message
@@ -43,7 +41,7 @@ async def send_welcome(message: Message) -> None:
     await message.answer(
         'Привет! клёво, что обратился!\n'
         'Вот план действий:\n '
-        f"1. введи команду [/{CommandsEnum.add_rule.value}](/{CommandsEnum.add_rule.value})\n"
+        f'1. введи команду [/{CommandsEnum.add_rule.value}](/{CommandsEnum.add_rule.value})\n'
         'Пример:\n'
         f'{make_example_with_description(message)}',
         parse_mode=ParseMode.MARKDOWN
@@ -102,10 +100,10 @@ def make_chat_rule_description(rule: ChatRulesDTO) -> str:
             f'пересылаю сообщения в чат: {forward_to}')
 
 
-@dp.error(ExceptionTypeFilter(Exception), F.update.message.as_("message"))
+@dp.error(ExceptionTypeFilter(Exception), F.update.message.as_('message'))
 async def handle_my_custom_exception(event: ErrorEvent, message: Message):
     # do something with error
-    await message.answer("Oops, something went wrong!")
+    await message.answer('Oops, something went wrong!')
 
 
 # @dp.error(ExceptionTypeFilter(AppError), F.update.message.as_("message"))

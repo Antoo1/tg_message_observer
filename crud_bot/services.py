@@ -1,7 +1,5 @@
 from aiogram.types import Message
-import json
 
-from crud_bot.app.logger import logger
 from crud_bot.common.services import BaseServiceWithDB
 from crud_bot.rule_crud import RuleCreator, RuleProvider, RuleRemover
 from crud_bot.dto import ChatRulesDTO, RuleDTO

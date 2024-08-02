@@ -9,7 +9,7 @@ class ExistingRuleDTO(RuleDTO):
 
 class ExistingChatRulesDTO(ChatRulesDTO):
     rules: set[ExistingRuleDTO]
-    
+
     def enrich_from_chat_rule(self, chat_rule):
         self.business_id = chat_rule.business_id or self.business_id
         self.owner_chat_id = chat_rule.owner_chat_id or self.owner_chat_id

@@ -3,7 +3,6 @@ from enum import Enum
 from typing import Optional, Dict, Any
 
 
-
 class ErrorCodes(Enum):
     # Неизвестная ошибка. Все остальные ошибки, не имеющие отдельного обработчика
     EX_UNKNOWN_ERROR = 'UNKNOWN_ERROR'

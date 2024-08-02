@@ -1,0 +1,20 @@
+repos:
+-   repo: https://github.com/pycqa/flake8
+    rev: '7.1.0'  # flake version
+    hooks:
+    -   id: flake8
+        exclude: >
+            (?x)^(
+                tests/\S*|
+                \S*/migrations/\S*
+            )$
+        additional_dependencies:  # Плагины
+            - flake8-broken-line
+            - flake8-builtins
+            - flake8-commas
+            - flake8-comprehensions
+            - flake8-bugbear
+            - flake8-print
+            - flake8-cognitive-complexity
+            - flake8-functions
+            - flake8-quotes

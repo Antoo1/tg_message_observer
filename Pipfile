@@ -18,6 +18,7 @@ motor = "*"
 telethon = "*"
 gunicorn = "*"
 python-json-logger = "*"
+pre-commit = "*"
 
 [dev-packages]
 pytest = "*"
