@@ -60,10 +60,12 @@ class HandlerRegistryService:
                 callback=handler,
                 event=events.NewMessage(
                     chats=chats,
-                    pattern=rule.regexp,
+                    pattern=rule.pattern,
                 )
             )
-            logger.info(f'registered new rule: {rule!r}')
+            logger.info(
+                f'registered new rule: {rule!r}\nobserving_chat: {chats}\nforwads to: {forward_to}'
+            )
             created_rules.add(ExistingRuleDTO(regexp=rule.regexp, handler=handler))
         return created_rules
 

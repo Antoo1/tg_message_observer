@@ -1,4 +1,7 @@
-from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator
+from typing import Callable
+import re
+
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 
 
 class RuleDTO(BaseModel):
@@ -12,6 +15,10 @@ class RuleDTO(BaseModel):
         if isinstance(other, RuleDTO):
             return self.regexp == other.regexp
         return False
+
+    @property
+    def pattern(self) -> Callable:
+        return re.compile(self.regexp).search
 
 
 class ChatRulesDTO(BaseModel):
