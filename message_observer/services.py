@@ -7,6 +7,7 @@ from telethon.tl.custom import Message
 from crud_bot.dto import RuleDTO, ChatRulesDTO
 from .app.config import config
 from .app.logger import logger
+from .common.cache_ttl_decorator import cache_with_ttl
 from .dto import ExistingRuleDTO, ExistingChatRulesDTO
 
 
@@ -85,8 +86,12 @@ class HandlerRegistryService:
 
 
 def _make_forward_message_handler(forward_to: int):
+    @cache_with_ttl(ttl=10, key_func=lambda x: hash((x.text, x.sender_id)))
     async def forward_message(event: Message):
-        logger.info(f'Forwarding message {event.text} to {forward_to=}')
+        logger.info(
+            f'Forwarding message {event.text} to {forward_to=}. {event.to_dict()=}, '
+            f'{event.chat_id}, {event.sender_id}'
+        )
         await event.forward_to(forward_to)
 
     return forward_message

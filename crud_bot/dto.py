@@ -1,7 +1,7 @@
 from typing import Callable
 import re
 
-from pydantic import BaseModel, Field, ConfigDict, model_validator
+from pydantic import BaseModel, Field, ConfigDict, model_validator, field_validator
 
 
 class RuleDTO(BaseModel):
@@ -19,6 +19,14 @@ class RuleDTO(BaseModel):
     @property
     def pattern(self) -> Callable:
         return re.compile(self.regexp).search
+
+    @field_validator('regexp')
+    def is_valid_regexp(cls, v):
+        try:
+            re.compile(v)
+        except re.error:
+            raise ValueError(f'Invalid regexp: {v}')
+        return v
 
 
 class ChatRulesDTO(BaseModel):
