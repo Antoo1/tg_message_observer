@@ -13,12 +13,14 @@ services:
       - "5000:5000"
 
   mongo:
-      build:
-        context: ./scripts/mongo
+      image: mongo:8.0.0-rc13
+      volumes:
+        - './.data/:/data/db'
+        - './migrations/:/docker-entrypoint-initdb.d/'
       restart: always
       env_file: '.env'
       expose:
         - "27017"
       ports:
-        - "27017:27017"
-      command: ["--replSet", "rs0"]
+        - "27018:27017"
+#      command: ["--replSet", "rs0"]
